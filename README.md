@@ -45,8 +45,8 @@ A Zugivó egy **Progresszív Webalkalmazás**, így telepíthető mobil eszköz�
 
 ## 📸 Képernyőképek
 <p align="center">
-  <img src="https://stono.stonawski.hu/zugivo/img/zscr1" alt="Képernyőkép 1" width="45%" style="margin-right:10px;">
-  <img src="ttps://stono.stonawski.hu/zugivo/img/zscr2" alt="Képernyőkép 2" width="45%">
+  <img src="https://stono.stonawski.hu/zugivo/img/zscr1.jpg" alt="Képernyőkép 1" width="45%" style="margin-right:10px;">
+  <img src="ttps://stono.stonawski.hu/zugivo/img/zscr2.jpg" alt="Képernyőkép 2" width="45%">
 </p>
 
 ---

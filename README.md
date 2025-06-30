@@ -37,7 +37,7 @@ A Zugivó egy **Progresszív Webalkalmazás**, így telepíthető mobil eszköz�
 
 ## 🛠️ Technológiák
 
-- HTML, CSS, JavaScript (Vanilla)
+- HTML, CSS, JavaScript (Vanilla), Bootstrap 5
 - PWA szabvány: manifest, service worker
 - Mobilra optimalizált dizájn
 

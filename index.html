@@ -2,9 +2,9 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Zugivó</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="img/favicon.png">
 
@@ -76,8 +76,8 @@ Ez a játék az aknakereső (minesweeper) logikájára épül, némi alkohollal 
                 <h3>🎲 A játék menete:</h3>
                 <ul>
                     <li>A játékmező egy <b>5×5</b>-ös tábla (25 mező).</li>
-                    <li>Egyetlen rossz mező van elrejtve (az akna).</li>
-                    <li>A többi 24 mező biztonságos, vagyis „ivásra nem kötelez”.</li>
+                    <li>Az akna el van rejtve, de a nehézségi szinttől függően <b>akár több rossz mező</b> is lehet.</li>
+                    <li>A többi mező biztonságos, vagyis „ivásra nem kötelez”.</li>
                 </ul>
                 <h3>👥 Kik játszhatják?</h3>
                 <p>18. életévüket betöltött játékosok (minimum 2-en, maximum 25-en)</p>
@@ -105,7 +105,29 @@ Ez a játék az aknakereső (minesweeper) logikájára épül, némi alkohollal 
             </div>
         </div>
     </div>
-    <div onclick="info()" class="info-icon" title="További információk">i</div>
+    <div id="infoBtn" class="info-icon" title="További információk">i</div>
+    <div id="settings" class="fade-in" style="overflow-y: auto">
+        <div class="window">
+            <div id="window-elements" class="text-center window-elements" style="height: 800px;overflow-y: auto;">
+                <h1>Beállítások</h1>
+                <br>
+                <hr>
+                <div>
+                    <h3>Nehézség</h3>
+                    <h5 id="difficulty"></h5>
+                    <h6 id="diffNum"></h6>
+                    <hr id="diffMeter">
+                    <div class="d-flex gap-5">
+                        <div id="diffDown" class="w-100 btn btn-secondary"><a><</a></div>
+                        <div id="diffUp" class="w-100 btn btn-secondary"><a>></a></div>
+                    </div>
+                </div>
+                <hr>
+                <p class="placeholder">🥃 Zugivó v2.0 | <a href="https://github.com/BenjaminStonawski/zugivo" target="_blank">GitHub</a></p>
+            </div>
+        </div>
+    </div>
+    <div id="settingsBtn" class="settings-icon" title="További információk">⚙️</div>
     <div class="d-flex p-25 titlediv">
         <img class="icon-title" src="img/favicon.png" alt="Zugivó">
         <h1 class="pagetitle">Zugivó</h1>
@@ -113,14 +135,14 @@ Ez a játék az aknakereső (minesweeper) logikájára épül, némi alkohollal 
     <h2 id="playerName" class="text-center"></h2>
     <div id="main" class="d-flex"></div>
     <div id="ujrakezd" class="text-center p-25">
-        <a onclick="restart()" class="btn btn-secondary">Újrakezd</a>
+        <a id="restartBtn" class="btn btn-secondary">Újrakezd</a>
     </div>
     <div class="text-center p-25" id="iv">
         <h3>Ivászatok száma</h3>
         <p id="jatekosok"></p>
     </div>
 
-    <script src="js/index.js"></script>
+    <script type="module" src="js/index.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

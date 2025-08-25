@@ -1,3 +1,5 @@
+import { SoundManager } from './sound-manager.js';
+import { zugTexts } from './texts.js';
 
 const main = document.getElementById("main");
 let vege = false;
@@ -17,25 +19,88 @@ for (let i = 0; i < columns.length; i++) {
     }
 }
 
-var wrongMine = new Audio('sounds/wm.mp3');
-var loseAudio = new Audio('sounds/lose.mp3');
-var btnAudio = new Audio('sounds/button.mp3');
-let angel = new Audio('sounds/angel.mp3');
+const sounds = new SoundManager();
+(async () => {
+  await sounds.loadAll({
+    wrongMine: 'sounds/wm.mp3',
+    loseAudio: 'sounds/lose.mp3',
+    btnAudio: 'sounds/button.mp3',
+    angel: 'sounds/angel.mp3',
+    pop: 'sounds/pop1.mp3',
+    buzz: 'sounds/buzz.mp3',
+  });
+})();
 
 let infoShow = false;
+let settingsShow = false;
 
-let randCol;
-let selCol;
-let rows;
-let randRow;
-let selRow;
+let selDiff = 0;
+document.getElementById("difficulty").innerHTML = "Könnyű";
+document.getElementById("diffNum").innerHTML = "(1:25)";
+document.getElementById("diffMeter").style.color = "#3cff00ff";
+
+function extremPlus() {
+    document.getElementById("difficulty").innerHTML = "Hát te hülye vagy...";
+    document.getElementById("diffNum").innerHTML = "(24:25)";
+    document.getElementById("difficulty").style.color = "gray";
+    document.getElementById("diffMeter").style.color = "red";
+    selDiff = 23;
+    sorsolas();
+}
+
+function diffChange() {
+    if (selDiff == 0) {
+        document.getElementById("difficulty").innerHTML = "Könnyű";
+        document.getElementById("diffNum").innerHTML = "(1:25)";
+        document.getElementById("difficulty").style.color = "white";
+        document.getElementById("diffMeter").style.color = "#3cff00ff";
+    }
+    else if (selDiff == 1) {
+        document.getElementById("difficulty").innerHTML = "Közepes";
+        document.getElementById("diffNum").innerHTML = "(2:25)";
+        document.getElementById("difficulty").style.color = "white";
+        document.getElementById("diffMeter").style.color = "yellow";
+    }
+    else if (selDiff == 2) {
+        document.getElementById("difficulty").innerHTML = "Nehéz";
+        document.getElementById("diffNum").innerHTML = "(3:25)";
+        document.getElementById("difficulty").style.color = "white";
+        document.getElementById("diffMeter").style.color = "red";
+    }
+    else if (selDiff == 3) {
+        document.getElementById("difficulty").innerHTML = "EXTRÉM";
+        document.getElementById("diffNum").innerHTML = "(4:25)";
+        document.getElementById("difficulty").style.color = "red";
+        document.getElementById("diffMeter").style.color = "red";
+    }
+    sorsolas();
+}
+
+let badCells = [];
 
 function sorsolas() {
-    randCol = Math.floor(Math.random() * 5);
-    selCol = columns[randCol];
-    rows = selCol.children;
-    randRow = Math.floor(Math.random() * 5);
-    selRow = rows[randRow];
+    badCells = [];
+    let needed = selDiff + 1;
+
+    for (let i = 0; i < columns.length; i++) {
+        const fSelRow = columns[i].children;
+        for (let j = 0; j < fSelRow.length; j++) {
+            fSelRow[j].classList.value = "";
+            fSelRow[j].classList.add("btn", "btn-primary", "mine");
+        }
+    }
+
+    while (badCells.length < needed) {
+        let randCol = Math.floor(Math.random() * 5);
+        let selCol = columns[randCol];
+        let rows = selCol.children;
+        let randRow = Math.floor(Math.random() * 5);
+        let selRow = rows[randRow];
+
+        if (!badCells.includes(selRow)) {
+            badCells.push(selRow);
+        }
+    }
 }
 
 let playerNum = 0;
@@ -43,37 +108,12 @@ let playerList = [];
 let playerDrinks = [];
 let selPlayer = 0;
 
-const zugTexts = [
-    "Beletörődtem sorsomba...",
-    "Küldd, amíg meleg!",
-    "Ez is az én hibám volt.",
-    "Egészségemre, többé-kevésbé!",
-    "Na jó, csak most az egyszer... újra.",
-    "Torkon csúszik, mint a vereség.",
-    "Koccintsunk... velem. Egyedül.",
-    "Legalább nem víz.",
-    "Ezt is megiszom helyettetek.",
-    "Vesztesként is győztes vagyok... a májgyilkolásban.",
-    "A zugivó cím büszke tulajdonosa lettem!",
-    "Csak a gyengék nem bírják. Én sem.",
-    "Nem is vagyok szomjas... még.",
-    "Ez az utolsó... talán.",
-    "Csak a májam tiltakozik.",
-    "Szóljon valaki anyunak!",
-    "Így kezdődnek a legendák... vagy a másnapok.",
-    "Fel a fejjel, le a feles!",
-    "A szabályok kegyetlenek, mint ez a pálinka.",
-    "Zugivás? Ez már művészet.",
-    "Nem vesztettem, csak inni akartam.",
-    "Így jár, aki lassan nyomja a gombot."
-];
-
 function jatekosMegadas() {
     document.getElementById("dialog").style.display = "block";
     document.getElementById("window-title").innerHTML = "Hányan játszanak?"
 
     document.getElementById("window-btn").onclick = function() {
-        btnAudio.play();
+        sounds.play('btnAudio');
         if (Number.isInteger(parseInt(document.getElementById("window-input").value)) && (parseInt(document.getElementById("window-input").value)) >= 2 && (parseInt(document.getElementById("window-input").value)) <= 25) {
             playerNum = parseInt(document.getElementById("window-input").value);
             if (playerNum >= 11) {
@@ -115,7 +155,7 @@ function jatekosMegadas() {
             document.getElementById("window-elements").appendChild(btnDiv);
 
             btn.onclick = function() {
-                btnAudio.play();
+                sounds.play('btnAudio');
                 let helyesMegadas = true;
                 const playerInputs = document.getElementById("players").querySelectorAll("input");
                 playerInputs.forEach(input => {
@@ -147,6 +187,7 @@ function jatekosMegadas() {
                     document.getElementById("players").style.display = "none";
                     document.getElementById("plNext").style.display = "none";
 
+                    document.getElementById("settingsBtn").style.display = "flex";
                     document.getElementById("iv").style.display = "block";
                 }
             }
@@ -180,7 +221,7 @@ function zugButton() {
     document.getElementById("window-elements").appendChild(btnDiv);
 
     btn.onclick = function () {
-        btnAudio.play();
+        sounds.play('btnAudio');
         document.getElementById("dialog").classList.remove("fade-in");
         document.getElementById("dialog").classList.add("fade-out");
 
@@ -201,8 +242,9 @@ window.onload = function() {
 
 function deterMine(sel) {
     if (!vege) {
-        if (sel == selRow) {
-            wrongMine.play();
+        if (badCells.includes(sel)) {
+            sounds.play('wrongMine');
+
             for (let i = 0; i < columns.length; i++) {
                 const fSelRow = columns[i].children;
                 for (let j = 0; j < fSelRow.length; j++) {
@@ -210,11 +252,14 @@ function deterMine(sel) {
                     fSelRow[j].classList.add("btn-secondary");
                 }
             }
-            sel.classList.remove("btn-primary");
-            sel.classList.add("btn-danger");
+
+            badCells.forEach(cell => {
+                cell.classList.remove("btn-secondary");
+                cell.classList.add("btn-danger");
+            });
 
             setTimeout(() => {
-                    loseAudio.play();
+                    sounds.play('loseAudio');
                     document.getElementById("dialog").classList.add("fade-in");
                     document.getElementById("dialog").style.display = "block";
                     document.getElementById("window-title").innerHTML = "<b>" + playerList[selPlayer] + "</b>" + ", te vagy a <b>zugivó!</b>";
@@ -228,8 +273,7 @@ function deterMine(sel) {
             document.getElementById("ujrakezd").style.display = "block";
         }
         else if (sel.classList.contains("btn-success")) {
-            var buzz = new Audio('sounds/buzz.mp3');
-            buzz.play();
+            sounds.play('buzz');
         }
         else {
             var pop = new Audio('sounds/pop1.mp3');
@@ -242,7 +286,7 @@ function deterMine(sel) {
             }
             document.getElementById("playerName").innerHTML = playerList[selPlayer];
 
-            pop.play();
+            sounds.play('pop');
             sel.classList.remove("btn-primary");
             sel.classList.add("btn-success");
         }
@@ -256,24 +300,22 @@ function deterMine(sel) {
                 }
             }
         }
-        if (grayMines == 1) {
+        
+        if (grayMines == selDiff+1) {
             document.getElementById("playerName").innerHTML = playerList[selPlayer];
 
-            angel.play();
-            for (let i = 0; i < columns.length; i++) {
-                const fSelRow = columns[i].children;
-                for (let j = 0; j < fSelRow.length; j++) {
-                    if (fSelRow[j].classList.contains("btn-primary")) {
-                        fSelRow[j].classList.remove("btn-primary");
-                        fSelRow[j].classList.add("btn-danger");
-                    }
+            sounds.play('angel');
+            badCells.forEach(cell => {
+                if (cell.classList.contains("btn-primary")) {
+                    cell.classList.remove("btn-primary");
+                    cell.classList.add("btn-danger");
                 }
-            }
+            });
             sel.classList.remove("btn-primary");
             sel.classList.add("btn-success");
 
             setTimeout(() => {
-                    loseAudio.play();
+                    sounds.play('loseAudio');
                     document.getElementById("dialog").classList.add("fade-in");
                     document.getElementById("dialog").style.display = "block";
                     document.getElementById("window-title").innerHTML = "<b>" + playerList[selPlayer] + "</b>" + ", te vagy a <b>zugivó!</b>";
@@ -290,7 +332,7 @@ function deterMine(sel) {
 }
 
 function restart() {
-    btnAudio.play();
+    sounds.play('btnAudio');
     vege = false;
     for (let i = 0; i < columns.length; i++) {
         const fSelRow = columns[i].children;
@@ -319,3 +361,48 @@ function info() {
         infoShow = false;
     }
 }
+
+function settings() {
+    if (!settingsShow) {
+        document.getElementById("settings").style.display = "block";
+        settingsShow = true;
+    }
+    else {
+        document.getElementById("settings").style.display = "none";
+        settingsShow = false;
+    }
+}
+
+document.getElementById("infoBtn").addEventListener("click", info);
+document.getElementById("settingsBtn").addEventListener("click", settings);
+document.getElementById("restartBtn").addEventListener("click", restart);
+document.getElementById("diffUp").addEventListener("click", 
+    function() {
+        if (selDiff < 3) {
+            sounds.play('btnAudio');
+            selDiff++;
+            diffChange();
+        }
+    }
+);
+document.getElementById("diffDown").addEventListener("click", 
+    function() {
+        if (selDiff == 23) {
+            sounds.play('btnAudio');
+            selDiff = 3;
+            diffChange();
+        }
+        else if (selDiff > 0) {
+            sounds.play('btnAudio');
+            selDiff--;
+            diffChange();
+        }
+    }
+);
+document.getElementById("difficulty").addEventListener("click", 
+    function() {
+        if (document.getElementById("difficulty").innerHTML.startsWith("EXTRÉM")) {
+            extremPlus();
+        }
+    }
+);

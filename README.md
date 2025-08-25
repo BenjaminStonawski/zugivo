@@ -2,6 +2,7 @@
   <img src="https://stono.stonawski.hu/zugivo/img/favicon.png" alt="Zugivó logó" width="32" style="vertical-align: middle; margin-right: 10px;">
   Zugivó – Ivós társasjáték aknakeresővel
 </h1>
+<h4>v2.0</h4>
 
 A **Zugivó** egy webes ivós társasjáték, amely az aknakereső (mines) logikájára épül. A játék célja egyszerű: mindenki választ egy mezőt – de csak egy rejti a „vesztést”, azaz az ivást. Aki rátalál, az a **zugivó**!
 
@@ -19,7 +20,7 @@ A **Zugivó** egy webes ivós társasjáték, amely az aknakereső (mines) logik
 - Minimum **2**, maximum **25** játékos.
 - A játék egy **5x5-ös mezőből** áll – összesen 25 választható mező.
 - Minden körben egy-egy játékos választ egy mezőt.
-- Egyetlen **rossz mező** van – aki ezt választja, veszít.
+- Az akna el van rejtve, de a nehézségi szinttől függően **akár több rossz mező** is lehet.
 - A vesztesnek meg kell innia a társaság által előre megbeszélt mennyiséget.
 - A vesztes kilétére egy vicces gomb utal, pl.: *„Beletörődtem sorsomba…”*
 - A játék újrakezdhető, a vesztes kezd a következő körben.
